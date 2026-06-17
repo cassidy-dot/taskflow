@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mama Creative Breakfast - Choose Your Own Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF1E2; --paper-2:#FFF9F0;
+    --ink:#241A14; --ink-soft:#5A4A3E;
+    --coral:#FF4B33; --coral-deep:#C12E1A;
+    --yolk:#FFC23C; --plum:#3B2545; --teal:#0E7C6B;
+    --line:#E4D3BC; --shadow:rgba(60,35,20,.18);
+    --display:'Bricolage Grotesque', system-ui, sans-serif;
+    --body:'Newsreader', Georgia, serif;
+    --ui:'Space Grotesk', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--body); color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #FFE8C2 0%, rgba(255,232,194,0) 60%),
+      linear-gradient(180deg,#FBF1E2 0%, #F6E6CE 100%);
+    min-height:100vh; -webkit-font-smoothing:antialiased; line-height:1.55;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:26px 20px 80px;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;}
+  .brand{display:flex;align-items:baseline;gap:9px;font-family:var(--display);cursor:pointer;}
+  .brand .logo{font-weight:800;font-size:1.45rem;letter-spacing:-.02em;color:var(--ink);}
+  .brand .logo b{color:var(--coral);}
+  .brand .tag{font-family:var(--ui);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);}
+
+  .clock{display:flex;align-items:center;gap:10px;min-width:172px;}
+  .clock .face{
+    font-family:var(--ui);font-weight:700;font-size:.82rem;letter-spacing:.04em;
+    background:var(--paper-2);border:1.5px solid var(--line);border-radius:999px;
+    padding:6px 12px;white-space:nowrap;box-shadow:0 1px 0 var(--line);
+    display:flex;align-items:center;gap:7px;
+  }
+  .clock .dot{width:8px;height:8px;border-radius:50%;background:var(--yolk);box-shadow:0 0 0 3px rgba(255,194,60,.25);transition:background .5s;}
+  .clock .bar{flex:1;height:8px;border-radius:999px;background:#EAD9C0;overflow:hidden;border:1px solid var(--line);}
+  .clock .fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--yolk),var(--coral));transition:width .7s cubic-bezier(.2,.8,.2,1);}
+
+  .page{
+    background:var(--paper-2);border:1.5px solid var(--line);border-radius:22px;
+    padding:34px 32px 30px;box-shadow:0 18px 40px -22px var(--shadow), 0 2px 0 var(--line);
+    position:relative;animation:rise .5s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+  .eyebrow{font-family:var(--ui);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--coral-deep);font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:10px;}
+  .eyebrow .num{background:var(--ink);color:var(--paper);border-radius:6px;padding:2px 8px;font-size:.62rem;letter-spacing:.1em;}
+
+  .art{font-size:3.4rem;line-height:1;margin:0 0 6px;filter:drop-shadow(0 6px 10px rgba(60,35,20,.18));animation:float 5s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-7px) rotate(1.5deg);}}
+
+  h1.title{font-family:var(--display);font-weight:800;font-size:2.15rem;line-height:1.04;letter-spacing:-.02em;margin:.1em 0 .5em;color:var(--ink);}
+
+  .body p{font-size:1.12rem;margin:0 0 1em;color:#33271E;}
+  .body p:last-child{margin-bottom:0;}
+  .body em{color:var(--coral-deep);font-style:italic;}
+  .body strong{font-weight:600;color:var(--ink);}
+
+  .castrow{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 4px;}
+  .chip{display:flex;align-items:center;gap:9px;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:5px 13px 5px 5px;box-shadow:0 1px 0 var(--line);}
+  .chip .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.95rem;flex:none;}
+  .chip .nm{font-family:var(--ui);font-weight:700;font-size:.8rem;letter-spacing:.01em;}
+  .chip .ro{font-family:var(--ui);font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);}
+
+  .choices{margin-top:26px;display:flex;flex-direction:column;gap:12px;}
+  .choice{display:flex;align-items:center;gap:14px;text-align:left;width:100%;cursor:pointer;background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:15px 17px;font-family:var(--body);font-size:1.06rem;color:var(--ink);transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;box-shadow:0 2px 0 var(--line);}
+  .choice:hover,.choice:focus-visible{transform:translateY(-2px);border-color:var(--coral);background:#FFF;box-shadow:0 10px 22px -12px var(--shadow);outline:none;}
+  .choice:focus-visible{outline:3px solid var(--yolk);outline-offset:2px;}
+  .choice .key{flex:none;width:30px;height:30px;border-radius:9px;background:var(--ink);color:var(--paper);font-family:var(--ui);font-weight:700;font-size:.85rem;display:grid;place-items:center;}
+  .choice .ic{font-size:1.3rem;flex:none;}
+  .choice .lbl{flex:1;}
+
+  /* home story cards */
+  .lede{font-size:1.14rem;color:#33271E;margin:0 0 22px;}
+  .stories{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .storycard{cursor:pointer;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:20px 18px;transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;box-shadow:0 2px 0 var(--line);display:flex;flex-direction:column;gap:8px;}
+  .storycard:hover,.storycard:focus-visible{transform:translateY(-3px);border-color:var(--coral);box-shadow:0 14px 28px -14px var(--shadow);outline:none;}
+  .storycard .big{font-size:2.6rem;line-height:1;}
+  .storycard .lab{font-family:var(--ui);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--coral-deep);font-weight:700;}
+  .storycard h3{font-family:var(--display);font-weight:800;font-size:1.32rem;line-height:1.05;margin:.1em 0 .15em;letter-spacing:-.01em;}
+  .storycard p{font-size:1rem;color:#43352B;margin:0;}
+  .storycard .go{margin-top:6px;font-family:var(--ui);font-weight:700;font-size:.78rem;letter-spacing:.04em;color:var(--coral-deep);}
+
+  .badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--ui);font-weight:700;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;background:var(--plum);color:#FFE9C7;border-radius:999px;padding:7px 15px;margin-bottom:14px;}
+  .ending h1.title{color:var(--plum);}
+  .ending .art{font-size:4rem;}
+  .ending-bad .badge{background:var(--coral-deep);color:#FFE2DC;}
+  .ending-bad h1.title{color:var(--coral-deep);}
+
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;padding-top:20px;border-top:1.5px dashed var(--line);}
+  .btn{font-family:var(--ui);font-weight:700;font-size:.82rem;letter-spacing:.04em;cursor:pointer;border-radius:11px;padding:11px 16px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);transition:transform .12s ease, box-shadow .12s ease, background .12s;}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px -10px var(--shadow);}
+  .btn.ghost{background:transparent;color:var(--ink);}
+  .btn.coral{background:var(--coral);border-color:var(--coral);color:#fff;}
+
+  .hint{font-family:var(--ui);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-align:center;margin-top:18px;}
+  .hint b{color:var(--coral-deep);}
+
+  .castgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:11px;margin-top:6px;}
+  .castcard{display:flex;gap:11px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;}
+  .castcard .av{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.15rem;flex:none;}
+  .castcard .nm{font-family:var(--ui);font-weight:700;font-size:.86rem;}
+  .castcard .ro{font-family:var(--ui);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);margin:1px 0 4px;}
+  .castcard .qk{font-size:.92rem;color:#43352B;line-height:1.35;}
+
+  @media (max-width:560px){
+    .wrap{padding:18px 14px 70px;}
+    .page{padding:26px 20px 24px;border-radius:18px;}
+    h1.title{font-size:1.8rem;}
+    .body p{font-size:1.05rem;}
+    .stories{grid-template-columns:1fr;}
+    .clock{min-width:130px;}
+    .clock .face{font-size:.72rem;padding:5px 9px;}
+    .brand .tag{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .page,.art{animation:none;}
+    .choice,.btn,.storycard{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand" onclick="goHome()" title="Back to the start">
+      <span class="logo">ma<b>ma</b></span>
+      <span class="tag">creative breakfast</span>
+    </div>
+    <div class="clock" aria-hidden="true">
+      <span class="face"><span class="dot" id="dot"></span><span id="clockTime">Wednesday</span></span>
+      <span class="bar"><span class="fill" id="clockFill"></span></span>
+    </div>
+  </div>
+  <div id="stage"></div>
+  <div class="hint">Tap a choice - or press <b>1</b>, <b>2</b>, <b>3</b> · press <b>R</b> to restart · <b>H</b> for home</div>
+</div>
+
+<script>
+/* ============================================================
+   CHARACTER ROSTER
+   ============================================================ */
+const HUES = ["#FFE0CC","#FFE9B8","#D9F0E6","#F3DDF0","#E6E3FB","#FFD9D2","#DDEBFB","#E9F2CF"];
+const C = {
+  laurence:{n:"Laurence",r:"CEO",e:"👑",q:"Loves a full room. Will absolutely eat your Nando's."},
+  alexa:{n:"Alexa",r:"COO",e:"🕵️‍♀️",q:"Mysterious. Portugal-based. Has probably already solved it."},
+  malki:{n:"Malki",r:"Traffic Manager",e:"📞",q:"Keeper of capacity. The Malki call is law."},
+  cassidy:{n:"Cassidy",r:"Strategist",e:"🏃‍♀️",q:"Loud, brilliant, tracksuit elite."},
+  britney:{n:"Britney",r:"Strategist",e:"🐶",q:"Amplified queen. Calm. Tea. Two cute dogs."},
+  leeann:{n:"Lee-Ann",r:"Lead Strategist",e:"🚌",q:"Experienced legend, strategising from the gym bus."},
+  zissy:{n:"Zissy",r:"Manager / Account",e:"🥗",q:"Always busy. Healthy-cooking & morning-movement icon."},
+  ally:{n:"Ally",r:"Strategist",e:"⚡",q:"Excitable, multitalented, AI-obsessed comedy mind. SA comedy influencer."},
+  tom:{n:"Tom",r:"Copywriter",e:"🎲",q:"Undercover comedian. Writes anything. Dice guy."},
+  chelane:{n:"Chelane",r:"Designer",e:"🐰",q:"Mama's sweetheart. Multitalented. Mielie's proud parent."},
+  johan:{n:"Johan",r:"Designer",e:"😂",q:"Best laugh alive. Tattoos. Protector of the queens."},
+  lana:{n:"Lana",r:"Designer",e:"🐟",q:"Not scary. Loves trout. Do not hug."},
+  storm:{n:"Storm",r:"Web & Designer",e:"👨‍👧",q:"Just a dad. Secretly the funniest. Loves his girl."},
+  dani:{n:"Dani",r:"Designer",e:"🎞️",q:"Queen of animation. Sunset hair. Durban legend."},
+  leah:{n:"Leah",r:"Designer",e:"🎭",q:"Master of accents. Funniest in any room. Cape Town."},
+  chan:{n:"Chan",r:"Account Manager",e:"🏋️",q:"Runs the RMs. Sprite Zero. Jokes you can't repeat."},
+  eitan:{n:"Eitan",r:"Relationship Manager",e:"🔥",q:"Brings the gees. Braai master. Logistics maniac."},
+  navah:{n:"Navah",r:"Relationship Manager",e:"🕶️",q:"Fashion icon. 1,000 sunglasses. Born influencer."},
+  nurit:{n:"Nurit",r:"Relationship Manager",e:"📱",q:"Always on the phone. Gifting legend. Temu's MVP."},
+  max:{n:"Max",r:"Relationship Manager",e:"🧢",q:"A literal puppy. Beanies. Sport. Pure joy."},
+  michelle:{n:"Michelle",r:"Account Manager",e:"💇‍♀️",q:"Flawless work. Best hair. Loves all animals."},
+  joanna:{n:"Joanna",r:"Business Dev",e:"🏅",q:"Hyrox queen. Makes every single person feel seen."},
+  alison:{n:"Alison",r:"Video Editor",e:"💧",q:"Heart-and-soul edits. Water. Blistex devotee."},
+  botsitso:{n:"Botsitso",r:"Video Editor",e:"🎧",q:"Green headphones. Energy drink. Streetwear king."},
+  luke:{n:"Luke",r:"Video Editor",e:"🎥",q:"Gimbal king. Two screens. Loves his wife."}
+};
+Object.keys(C).forEach((k,i)=>C[k].hue=HUES[i%HUES.length]);
+
+const WILD = ["strategy_gut","creative_vibe","rel_creators"];
+const POLISHED = ["strategy_data","creative_animate","rel_client"];
+
+/* ============================================================
+   STORY DATA  (enhanced — longer beats, unique endings)
+   ============================================================ */
+const STORY = {
+
+  /* ============ STORY 1 - THE GOLDEN BRIEF ============ */
+  s1_start:{
+    chapter:"Story One · Prologue", num:"00", time:"8:47 AM", fill:4, art:"🥐",
+    title:"Mama & The Golden Brief",
+    body:[
+      "It's <strong>8:47 on a Wednesday</strong>. Creative Breakfast. The pastries are out — Tom's croissant is already under threat. Laurence is doing his rounds asking if anyone has gum. He has gum. It is never his own gum.",
+      "Then every phone in the building buzzes at once. The same email, to everyone. Subject line: <strong>THE GOLDEN BRIEF.</strong>",
+      "A mystery mega-client. The biggest budget Mama has ever been offered. One catch: a complete, world-stopping campaign — strategy, creative, assets, everything — delivered by <strong>5:00 PM today</strong>. Win it and Mama is legendary. Fumble it and... let's not finish that sentence.",
+      "Petrus, who has already quietly made a salad and is saying nothing but somehow communicating <em>I believe in you</em>, nods at you. Laurence claps once: <em>“This is our Everest. There's a Nando's on the other side and I plan to eat there tonight. Where do we start?”</em>",
+      "The room looks at you."
+    ],
+    cast:["laurence","cassidy","tom"],
+    choices:[
+      {ic:"🧠",lbl:"<strong>Strategy first.</strong> No plan, no glory. Lock Cassidy, Lee-Ann and Zissy in a room.",to:"s1_strategy"},
+      {ic:"🎨",lbl:"<strong>Creative first.</strong> Skip the deck, go straight to making something insane.",to:"s1_creative"},
+      {ic:"🤝",lbl:"<strong>Relationships first.</strong> Get the creators and client bought in before a single slide is made.",to:"s1_relationships"}
+    ]
+  },
+  s1_strategy:{
+    chapter:"Story One · The War Room", num:"01", time:"10:15 AM", fill:24, art:"🧠",
+    title:"Lock In",
+    body:[
+      "You follow Cassidy — loud, fresh tracksuit, Gloot energy drink number two already open — into the strategy room. Lee-Ann dials in from a Cape Town bus on her way to the gym, somehow the calmest person in the call. Zissy is already set up, having prepped a colour-coded doc before anyone said a word.",
+      "Cassidy paces. <em>“The brief says world-stopping. I'm obsessed with world-stopping.”</em> Zissy writes that down because Zissy writes everything down before it can escape.",
+      "Lee-Ann, between bus stops, unbothered: <em>“Great. What's the actual insight, though? What does this client need that nobody else has given them yet?”</em>",
+      "The room goes quiet. She's right. There's a difference between world-stopping and <em>meaningful</em>. You need both. What's the move?"
+    ],
+    cast:["cassidy","leeann","zissy"],
+    choices:[
+      {ic:"📊",lbl:"<strong>Get the data.</strong> Call in Ally and Britney to find the cultural gap.",to:"s1_strat_data"},
+      {ic:"🔥",lbl:"<strong>Trust the gut.</strong> Get Tom in with one big, unhinged idea before the data paralyses everyone.",to:"s1_strat_gut"}
+    ]
+  },
+  s1_strat_data:{
+    chapter:"Story One · The Insight", num:"02", time:"12:00 PM", fill:45, art:"📊", flag:"strategy_data",
+    title:"The Numbers Don't Lie",
+    body:[
+      "Ally bursts in — three AI tabs already open, talking a mile a minute about a trend he clocked at 6 AM and a model he 'just quickly built' over breakfast. Britney glides in behind him with a cup of tea and two-dogs'-worth of calm, pulling Amplified creator data like she was born doing it.",
+      "Between them, in forty minutes, they surface it: a cultural gap nobody's filled, a tension the audience feels daily but nobody's named out loud yet. The kind of thing that makes a campaign feel like it was made <em>for them specifically</em>.",
+      "<em>“This,”</em> says Ally, vibrating slightly, <em>“is the one.”</em> Zissy logs every word. Cassidy screams — an actual scream — and immediately starts briefing the RMs.",
+      "Lee-Ann, still on the bus (now at the gym car park), gives a single calm nod. Highest praise available."
+    ],
+    cast:["ally","britney","zissy"],
+    choices:[{ic:"➡️",lbl:"Insight locked. Now make it real — <strong>to the edit bay.</strong>",to:"s1_crunch"}]
+  },
+  s1_strat_gut:{
+    chapter:"Story One · The Big Idea", num:"02", time:"12:00 PM", fill:45, art:"🎲", flag:"strategy_gut",
+    title:"The Unhinged Masterstroke",
+    body:[
+      "Tom strolls in with undercover-comedian energy, rolls a single die for no discernible reason, glances at it, and pitches a concept so gloriously unhinged and so <em>precisely right</em> that the room goes dead silent for a full three seconds.",
+      "Cassidy grabs the table. <em>“That's it. That is <strong>it</strong>.”</em> Zissy types faster than seems physically possible. Lee-Ann, on the gym bus, nearly drops her phone.",
+      "Tom rolls the die again. <em>“Yeah, I thought so.”</em> Nobody asks what the die is for. Some mysteries are sacred.",
+      "The idea is brave and stupid and perfect. The kind of campaign that either becomes a case study or a cautionary tale, and right now everyone in the room believes it'll be the first one."
+    ],
+    cast:["tom","cassidy","zissy"],
+    choices:[{ic:"➡️",lbl:"Idea locked. Now make it real — <strong>to the edit bay.</strong>",to:"s1_crunch"}]
+  },
+  s1_creative:{
+    chapter:"Story One · The Design Dungeon", num:"01", time:"10:15 AM", fill:24, art:"🎨",
+    title:"Forget The Plan",
+    body:[
+      "You descend to the design dungeon — natural habitat of Johan (best laugh in the building, tattoos, fiercely guarding his Pretorian queens), Lana (looks scary, would simply prefer you did not hug her, respects a good trout), and Chelane, Mama's sweetheart, who may or may not be holding Mielie on camera under the desk. Storm waves from his corner — just a dad, quietly the funniest person here.",
+      "Johan cracks his knuckles, that laugh already building in his chest. <em>“Brief says world-stopping. Easy. We've stopped the world before, we'll do it again. What's the format?”</em>",
+      "Lana, reviewing the brief without looking up: <em>“Make it something that can't be ignored. Not something that asks to be noticed. There's a difference.”</em>",
+      "Everyone pauses. Lana is right. The question is how."
+    ],
+    cast:["johan","lana","chelane","storm"],
+    choices:[
+      {ic:"🎞️",lbl:"<strong>Make it MOVE.</strong> Dial Dani in Durban and animate something genuinely unreal.",to:"s1_cre_animate"},
+      {ic:"💅",lbl:"<strong>Make it a VIBE.</strong> Fashion, styling, editorial energy that gets screenshotted into fifteen group chats.",to:"s1_cre_vibe"}
+    ]
+  },
+  s1_cre_animate:{
+    chapter:"Story One · Frame by Frame", num:"02", time:"1:00 PM", fill:50, art:"🎞️", flag:"creative_animate",
+    title:"The Durban Connection",
+    body:[
+      "A call connects to Durban, where Dani — queen of animation, hair like a sunset, Vida e Café nearby — is already sketching frames before anyone finishes the sentence. Her name gets mispronounced twice on the call. She corrects it without breaking rhythm.",
+      "What she conjures is impossible. Fluid, emotional, technically absurd for the timeline. Storm builds the web layer around it in real time, muttering admiringly. Lana leans toward her screen and says <em>“okay that's actually sick”</em> — which from Lana is basically a standing ovation and a feature in a design magazine.",
+      "Johan's laugh echoes through the building. He shows everyone on his phone. Chelane tears up a little and says <em>“it just feels like us.”</em>",
+      "It does. It really does."
+    ],
+    cast:["dani","storm","lana"],
+    choices:[{ic:"➡️",lbl:"It's stunning. Now ship it — <strong>to the edit bay.</strong>",to:"s1_crunch"}]
+  },
+  s1_cre_vibe:{
+    chapter:"Story One · The Whole Vibe", num:"02", time:"1:00 PM", fill:50, art:"🎭", flag:"creative_vibe",
+    title:"Screenshot Energy",
+    body:[
+      "Leah video-calls in from Cape Town and within thirty seconds has done three accents and set the entire creative tone for the campaign, because that's how Leah's brain works. The concept blooms into a full editorial vibe — bold, fashion-forward, the kind of thing that gets screenshot-saved before the scroll is finished.",
+      "Chelane's design instincts go supernova. She's pulling references from everywhere, assembling a mood board that somehow already looks like the finished piece. <em>“It needs to feel like a moment,”</em> she says, <em>“not a campaign.”</em>",
+      "Navah, pulled in for a vibe-check, puts her sunglasses on and then takes them off again slowly. <em>“That's the one. I would post that. I would post that <strong>now</strong>.”</em> Coming from Navah, this is gospel.",
+      "Johan frames it on his screen and takes a photo of the photo. Iconic behaviour."
+    ],
+    cast:["leah","chelane","navah"],
+    choices:[{ic:"➡️",lbl:"It's a moment. Now ship it — <strong>to the edit bay.</strong>",to:"s1_crunch"}]
+  },
+  s1_relationships:{
+    chapter:"Story One · The Amplified Frequency", num:"01", time:"10:15 AM", fill:24, art:"🤝",
+    title:"We Win With People",
+    body:[
+      "You head to the Amplified floor — less a room and more a frequency. Chan is mid-inappropriate-joke, Sprite Zero in hand, somehow also tracking every relationship manager at once on a mental spreadsheet only she can see. Eitan has already volunteered to braai for morale and is sourcing wood. Max bounds over in a fresh beanie, genuine excitement radiating off him like a puppy who heard the word <em>adventure</em>.",
+      "Joanna moves through the chaos quietly making every single person feel like the most important person in the room — a genuine superpower that should probably be studied.",
+      "<em>“The golden brief?”</em> Chan reads the email, takes a long sip of Sprite Zero. <em>“Okay. If we're winning this we win it with people. Always. Who do we call first?”</em>",
+      "The room leans in."
+    ],
+    cast:["chan","eitan","max","joanna"],
+    choices:[
+      {ic:"📣",lbl:"<strong>Activate the creators.</strong> Get the Amplified network mobilised before lunch.",to:"s1_rel_creators"},
+      {ic:"🎩",lbl:"<strong>Lock the client.</strong> Get them in the room first — charm them in, then deliver.",to:"s1_rel_client"}
+    ]
+  },
+  s1_rel_creators:{
+    chapter:"Story One · The Network", num:"02", time:"1:00 PM", fill:50, art:"📣", flag:"rel_creators",
+    title:"Dial Tone Symphony",
+    body:[
+      "Nurit is already on the phone — Nurit is <em>always</em> on the phone — and within twenty minutes has half the creator network on standby, a Temu gift parcel ordered for each team member 'for motivation,' and Petrus quietly assembling a snack station in the corner.",
+      "Navah swans in — sunglasses number 417 of a very long and storied 1,000 — and turns the whole brief into something irresistible. She has a gift for making people feel like whatever they're doing is the most exciting thing happening anywhere on earth. By the time she's done briefing the creators, they're competing to be first.",
+      "Max is on his phone, talking to three creators simultaneously, looking like he personally cannot believe how good this job is. Eitan has lit a small metaphorical fire under everyone and is keeping it burning on protein shakes and pure enthusiasm.",
+      "<em>“They're ready,”</em> says Nurit, still on another call. <em>“They've been ready.”</em>"
+    ],
+    cast:["nurit","navah","max"],
+    choices:[{ic:"➡️",lbl:"The network's lit. Now build it — <strong>to the edit bay.</strong>",to:"s1_crunch"}]
+  },
+  s1_rel_client:{
+    chapter:"Story One · The Close", num:"02", time:"1:00 PM", fill:50, art:"🎩", flag:"rel_client",
+    title:"Charmed, Truly",
+    body:[
+      "Michelle steps in — flawless as ever, hair doing something architecturally impossible for a Wednesday morning, wearing the calm confidence of someone who has never once dropped a client. She takes one look at the brief, asks two questions nobody else thought to ask, and maps exactly what this client needs to feel before they'll say yes.",
+      "Britney supports on the Amplified angle, unbothered, tea in hand, walking them through what the creator network can uniquely deliver. The client came in sceptical and is leaving in love.",
+      "Joanna, who happens to walk through reception, makes eye contact with the client for four seconds and makes them feel completely understood as a human being. It is possibly the most effective thirty seconds of business development in Mama's history.",
+      "<em>“They're in,”</em> Michelle says quietly. <em>“They're fully in. Let's not waste it.”</em>"
+    ],
+    cast:["michelle","britney","joanna"],
+    choices:[{ic:"➡️",lbl:"They're locked in. Now deliver — <strong>to the edit bay.</strong>",to:"s1_crunch"}]
+  },
+  s1_crunch:{
+    chapter:"Story One · The Crunch", num:"03", time:"3:30 PM", fill:80, art:"⏳",
+    title:"Ninety Minutes Left",
+    body:[
+      "It's <strong>3:30 PM</strong>. You have the idea, you have the buy-in, you have the brief. Now it has to actually get <em>built</em> — a hundred things to deliver in ninety minutes with no margin for error.",
+      "The edit bay is alive. Alison is laughing at something while simultaneously maintaining her ninth water of the day and applying Blistex with surgical focus — her edit is clean and perfect and she made it look easy. Botsitso nods in green headphones, energy drink beside him, fit immaculate, somehow editing in perfect rhythm. Luke has <strong>two screens</strong> up (so you know it's serious) and a gimbal already warm and ready.",
+      "Then the phone rings. It's a <strong>Malki call</strong>. The room holds its breath. Malki, keeper of all capacity, calm as a winter lake: <em>“We don't have the hours. I've run the numbers. Something has to give. What's the move?”</em>",
+      "A Malki call is not a suggestion. A Malki call is the universe telling you to make a decision."
+    ],
+    cast:["alison","botsitso","luke","malki"],
+    choices:[
+      {ic:"⚡",lbl:"<strong>All hands on deck.</strong> Everyone drops everything. Full send, full chaos.",to:"s1_overdrive"},
+      {ic:"🎯",lbl:"<strong>Stay surgical.</strong> Trust the system, protect the team, deliver clean — and on time.",to:"s1_surgical"},
+      {ic:"📡",lbl:"<strong>Call Alexa.</strong> Nobody fully knows what she does. She just… fixes things.",to:"s1_endTwist"}
+    ]
+  },
+  s1_overdrive:{
+    chapter:"Story One · Overdrive", num:"04", time:"4:30 PM", fill:92, art:"⚡",
+    title:"Full Send",
+    body:[
+      "Everyone drops everything. The whole building converges on one deliverable. Cassidy's yelling encouragement and Gloot energy drink logistics. Eitan has brought actual snacks 'for morale' and is distributing them at a sprint. Botsitso hasn't blinked in twenty minutes. Luke is on his third screen somehow — he says nothing, the screens say everything.",
+      "It is electric. It is slightly feral. It is the most alive the building has ever felt on a single afternoon.",
+      "It's 4:30. You are <em>so close.</em> But close is not done. Alison is laughing while exporting. Tom is reviewing the copy at full speed, making tiny critical changes that each take three seconds and save the whole thing. The clock does not care about any of this.",
+      "One last call. What do you do?"
+    ],
+    cast:["cassidy","eitan","botsitso","tom"],
+    choices:[
+      {ic:"🚀",lbl:"<strong>Ship it raw and proud.</strong> Imperfect, alive, unpolished, and exactly on time.",resolve:"s1:sendraw"},
+      {ic:"🌙",lbl:"<strong>Push through an all-nighter</strong> — one more pass until it's absolutely perfect.",to:"s1_endBurnout"},
+      {ic:"🏃",lbl:"<strong>Rush it out now</strong> — skip the final proofread, every second counts.",to:"s1_endTypo"}
+    ]
+  },
+  s1_surgical:{
+    chapter:"Story One · Surgical", num:"04", time:"4:30 PM", fill:92, art:"🎯",
+    title:"Calm Hands",
+    body:[
+      "No panic. Malki re-sequences the workload so nobody's drowning, Zissy keeps the master doc spotless and updated in real time, and the team moves at a fast but genuinely human pace. It is almost suspiciously calm in here.",
+      "Lee-Ann checks in from Cape Town, asks two questions, confirms it's looking good, disappears back to her evening. Ally makes one last optimisation nobody else spotted. Tom does a final copy pass that takes seven minutes and saves the campaign from three quietly embarrassing lines.",
+      "It's 4:30 and you're genuinely on track. The system worked because someone trusted it. The work is clean. The team is intact. Final call:"
+    ],
+    cast:["malki","zissy","leeann"],
+    choices:[
+      {ic:"✅",lbl:"<strong>Trust the plan. Ship it clean, on time, exactly as built.</strong>",resolve:"s1:clean"},
+      {ic:"🔁",lbl:"<strong>One more polish pass.</strong> It's good but it could be perfect.",to:"s1_endMissed"}
+    ]
+  },
+
+  /* STORY 1 ENDINGS */
+  s1_endLegendary:{ending:true,badge:"Ending · The Clean Sweep",time:"5:00 PM",fill:100,art:"🏆",
+    title:"The Legendary Win",
+    body:[
+      "<strong>5:00 PM exactly.</strong> The deliverable lands in the client's inbox — sharp, polished, not a pixel out of place. Strategy airtight. Creative stunning. Every asset perfect. The client reads it in real time and goes completely silent.",
+      "Then: <em>“How soon can you start the next one?”</em>",
+      "Laurence finds out and stands on a chair and gives a speech that makes Alison cry and Botsitso bump his fist on the desk. Joanna makes every single person feel like the specific, indispensable reason it worked. (They were. All of them were.)",
+      "Malki sends a single message: <em>'Good capacity management today.'</em> Highest compliment available.",
+      "<strong>Mama: certified legendary. The Clean Sweep. No drama, no smoke alarms, no typos — just a team that believed it and built it.</strong>"
+    ]},
+  s1_endViral:{ending:true,badge:"Ending · The Happy Accident",time:"4:58 PM",fill:100,art:"💥",
+    title:"The Beautiful Accident",
+    body:[
+      "It does <em>not</em> go to plan. At 4:58 something breaks, someone exports the wrong version, Eitan lights a small braai 'for morale' that immediately trips a smoke alarm and empties half the floor — and in the chaos the raw, weird, gut-instinct version ships instead of the polished safe one.",
+      "It breaks the internet. Not slightly. <em>Fully.</em> The unpolished version had an energy the safe version had edited out — and the internet knew it immediately.",
+      "Comments flood in. The mystery client triples the budget on the phone within the hour. Navah screenshots everything. Tom narrates the aftermath like an awards acceptance speech he absolutely did not write in advance.",
+      "Chan takes full credit on the agency TikTok. She gets 40,000 views before dinner. <strong>Honestly? Fair. The accidental version was always the right one — someone just needed to accidentally send it.</strong>"
+    ]},
+  s1_endChaos:{ending:true,badge:"Ending · Held Together With Love",time:"4:59 PM",fill:100,art:"⏱️",
+    title:"The 4:59 Miracle",
+    body:[
+      "Pure adrenaline. The whole building on one deliverable. It is loud. Cassidy is yelling encouragement and also instructions simultaneously. Max is sprinting between desks carrying assets on a USB drive like a relay baton. Nurit is on three calls. Botsitso hasn't blinked. Luke has a fourth screen somehow.",
+      "At <strong>4:59 and 47 seconds</strong>, it ships. It is held together with love, strong coffee, Blistex, and approximately one well-placed Tom copy edit. It is imperfect and alive and <em>good</em>.",
+      "You did not win clean. You won <em>together</em> — which, in retrospect, is the Mama way. Laurence nearly cries and blames allergies. Petrus, saying nothing, has already made the celebratory tea.",
+      "<strong>Nobody will ever know how close that was. That is between this team and the upload progress bar forever.</strong>"
+    ]},
+  s1_endClean:{ending:true,badge:"Ending · Make It Look Easy",time:"4:45 PM",fill:100,art:"🧊",
+    title:"The Quiet Triumph",
+    body:[
+      "No drama. No smoke alarms. No 4:59 miracles. Just a team that trusted its system, protected each other's capacity, and built something genuinely great at a genuinely human pace.",
+      "At <strong>4:45 PM — early —</strong> the campaign ships. Clean, calm, and completely on brief. The client loves it. Nobody burned out. The work speaks for itself.",
+      "Zissy does a small triumphant morning-movement stretch. Malki marks the capacity sheet GREEN for the first time in recent memory. Lee-Ann sends a single voice note: <em>'That's how it should always work.'</em>",
+      "<strong>The most impressive thing a creative agency can do is make the impossible look easy. Mama made it look easy today.</strong>"
+    ]},
+  s1_endTwist:{ending:true,badge:"Ending · The Plot Twist",time:"5:00 PM",fill:100,art:"🕵️‍♀️",
+    title:"The Alexa Gambit",
+    body:[
+      "You call Alexa. Portugal answers on half a ring — she was already holding her phone. She listens to the situation without interrupting. She says <em>'mm.'</em> Then: <em>'Already handled.'</em>",
+      "It turns out Alexa saw the Golden Brief coming three weeks ago. She quietly pre-aligned every moving part, briefed Malki on the capacity buffer, arranged the creator network standby with Nurit, and has spent the morning watching the team figure it all out on their own — because she wanted them to.",
+      "Some say the Golden Brief itself was <em>hers</em>. The ultimate creative exercise — not for a client, but for Mama. Built to show the team exactly what they're capable of when the pressure is real.",
+      "Nobody can confirm this. Alexa smiles, says <em>'love you, byeee,'</em> and hangs up to be with her kids. The campaign ships perfectly. It was always going to.",
+      "<strong>You were inside the plan the entire time. You just didn't know it.</strong>"
+    ]},
+  s1_endMissed:{ending:true,bad:true,badge:"Bad Ending · Done > Perfect",time:"5:00:01 PM",fill:100,art:"⌛",
+    title:"Just One More Tweak",
+    body:[
+      "The work was done. It was genuinely good. But you couldn't stop looking at it. One more pass. One tiny perfect change. Tighten that line. Recolour that frame. The upload bar reached 98% at 4:58 and you pulled it back to fix one thing nobody would have noticed.",
+      "<strong>5:00:01 PM.</strong> The client's deadline closes. Somewhere, a mystery client refreshes an empty inbox.",
+      "The campaign is the most beautiful thing Mama has ever made. Nobody outside this office will ever see it. Cassidy stares at the clock. Zissy gently closes her laptop. Tom, quietly, does not say anything — which is somehow the worst thing of all.",
+      "<strong>Done beats perfect, every single time. A delivered 9 out of 10 will always outlive an undelivered 10.</strong>"
+    ]},
+  s1_endBurnout:{ending:true,bad:true,badge:"Bad Ending · The Cost",time:"Next Morning",fill:100,art:"🪫",
+    title:"The Crash",
+    body:[
+      "You ignored the Malki call. You do <em>not</em> ignore the Malki call. The capacity Malki flagged was real capacity — real humans with real limits — and you burned through all of it.",
+      "The campaign shipped. The client was happy. But the next morning the studio is a collection of polite husks held upright by cold coffee, spite, and the memory of yesterday. Three people are asleep at their desks. Alison's Blistex is missing and nobody has the energy to look.",
+      "Malki files a calm, devastating, four-page capacity post-mortem. It is, in its own way, a masterpiece. It is sent to everyone.",
+      "<strong>You won the brief and lost the week. Some victories are a kind of loss. The Golden Brief is framed. The team needs two Wednesdays off.</strong>"
+    ]},
+  s1_endTypo:{ending:true,bad:true,badge:"Bad Ending · One Little Corner",time:"5:01 PM",fill:100,art:"🙈",
+    title:"The Typo Heard 'Round the World",
+    body:[
+      "To save ninety seconds you skipped the final proofread. Just this once. Just this one tiny corner. What could go wrong?",
+      "The client's company name. Spelled gloriously, confidently, <strong>wrong</strong>. In 400-point font. On the hero frame. Sent to the client, their board, and — because someone hit reply-all — approximately ten million people.",
+      "It trends. Immediately. Not the good way. Tom offers to write the public apology and produces the funniest, most self-aware piece of crisis copy in marketing history — which somehow makes it slightly worse and also slightly better.",
+      "Mama becomes a case study. Not the kind they put in awards shows. The other kind. <strong>Tom frames it. He says it's actually his favourite thing he's ever written. That stings most of all.</strong>"
+    ]},
+
+  /* ============ STORY 2 - THE GREAT MIELIE HUNT ============ */
+  s2_start:{
+    chapter:"Story Two · Prologue", num:"00", time:"9:00 AM", fill:5, art:"🐰",
+    title:"The Great Mielie Hunt",
+    body:[
+      "Wednesday, <strong>9:00 AM</strong>. Chelane arrives at Creative Breakfast the colour of a ghost. Mielie — her beloved office bunny, emotional support icon, and unofficial Mama mascot — has wriggled free of the carrier somewhere between the car park and the front door. Vanished. Into the building.",
+      "It gets worse. At <strong>11:00 AM sharp</strong>, a major new client is arriving for a full agency tour. Two hours. One small rabbit. One creative agency full of cables, snacks, and places a bunny absolutely should not go.",
+      "Johan rolls up his sleeves — you do <em>not</em> endanger a Pretorian queen's pet and walk away. Lana grabs a head of lettuce and mutters that she's only helping because she respects the bunny, not because she likes anyone. Chelane is close to tears and doing her best not to show it.",
+      "<em>“Okay, detective,”</em> says Chelane, composing herself. <em>“Where does a bunny go when she's loose? Where do we start?”</em>"
+    ],
+    cast:["chelane","johan","lana"],
+    choices:[
+      {ic:"🎨",lbl:"<strong>The design dungeon</strong> — Mielie's home turf, she knows every corner.",to:"s2_design"},
+      {ic:"🎬",lbl:"<strong>The edit bay</strong> — follow the trail of suspiciously chewed cables.",to:"s2_edit"},
+      {ic:"📣",lbl:"<strong>The Amplified frequency</strong> — loudest room in the building, chaos magnet for curious rabbits.",to:"s2_amp"}
+    ]
+  },
+  s2_design:{
+    chapter:"Story Two · Home Turf", num:"01", time:"9:40 AM", fill:28, art:"🎨",
+    title:"Home Turf",
+    body:[
+      "The design dungeon: exactly where a curious rabbit with taste would end up. Storm's already on his hands and knees checking under every desk, narrating it in the voice of a nature documentary he'll definitely retell to his daughter tonight. Chelane crouches at the far end, making the specific soft sound she only makes for Mielie.",
+      "Johan sweeps the room with the methodical energy of a man who has, in fact, protected people before and is treating this with the same seriousness. <em>“She hasn't gone far,”</em> he says. <em>“She's comfortable here. She knows this room.”</em>",
+      "There's a clue: a perfect crescent nibbled out of someone's left AirPod, and a small trail of carrot tops leading two different directions. The question is which path is fresher."
+    ],
+    cast:["storm","chelane","johan"],
+    choices:[
+      {ic:"🥕",lbl:"<strong>Follow the carrot trail</strong> under the server desks.",to:"s2_d1"},
+      {ic:"💻",lbl:"<strong>Call Dani in Durban</strong> — she can see every webcam from her screen, heist-control-room style.",to:"s2_d2"}
+    ]
+  },
+  s2_d1:{
+    chapter:"Story Two · The Cable Jungle", num:"02", time:"10:10 AM", fill:50, art:"🥕", flag:"risky",
+    title:"Into the Cable Jungle",
+    body:[
+      "The carrot trail leads behind the server rack — into a genuine jungle of cables, dust, and technology that probably shouldn't be disturbed. Cassidy, hearing the commotion from the kitchen, dives in headfirst in a fresh tracksuit yelling <em>'MIELIE, MAMA'S HERE'</em> — using the wrong name but somehow radiating the right energy.",
+      "Storm is wedged between two monitors on his stomach. He looks like a man who has made peace with whatever comes next and is quietly proud of that. <em>'I can hear her,'</em> he says. <em>'She's right there. Right. There.'</em>",
+      "You can hear soft, rhythmic thumping. Very close. Very near some extremely important wiring. The clock says 10:10. The client says 11:00. This is fine."
+    ],
+    cast:["cassidy","storm"],
+    choices:[{ic:"➡️",lbl:"Mielie's cornered by the servers — <strong>now get to the lobby before the door opens.</strong>",to:"s2_climax"}]
+  },
+  s2_d2:{
+    chapter:"Story Two · Eyes Everywhere", num:"02", time:"10:10 AM", fill:50, art:"💻", flag:"careful",
+    title:"Eyes Everywhere",
+    body:[
+      "Dani video-calls in from Durban, sunset hair backlit by morning light, Vida e Café on the desk, and does the most Dani thing imaginable: pulls up a grid of everyone's webcams and starts scanning each feed with the quiet focus of someone cutting a complex animation sequence.",
+      "Britney joins calmly with a cup of tea, narrating what she sees on the feeds in a steady voice. Ally drops in, excitable, immediately trying to fine-tune an AI object-detection model to 'spot rabbit' — it half works, which is more than most would manage.",
+      "<em>'There,'</em> says Dani, zooming. Frame 47, the reception webcam. A grey blur hopping across the sofa cushions with complete, sovereign calm, like she's reviewing the furniture for her own purposes.",
+      "Everyone exhales. She's in the lobby. She's safe. The clock says 10:10."
+    ],
+    cast:["dani","britney","ally"],
+    choices:[{ic:"➡️",lbl:"Spotted in reception — <strong>head for the lobby now.</strong>",to:"s2_climax"}]
+  },
+  s2_edit:{
+    chapter:"Story Two · Follow the Cables", num:"01", time:"9:40 AM", fill:28, art:"🎬",
+    title:"Follow the Cables",
+    body:[
+      "The edit bay. Alison starts laughing before you even finish explaining, water bottle in one hand, Blistex ready in the other, because of course she does. Botsitso lifts one green headphone, takes in the situation in two seconds, and nods with the calm of a man who has seen stranger things and will see stranger things again. Luke already has two screens up — one edit, one now a makeshift bunny surveillance feed running on his phone via a desk-angled camera he rigged in four minutes.",
+      "There are tiny, precise tooth-marks on a USB cable near the far desk. Fresh. Mielie has been here, and recently. The hunt is narrowing.",
+      "Tom appears in the doorway. <em>'I'm writing a hardboiled detective story about this in real time,'</em> he says, and rolls a die. Nobody tells him to stop."
+    ],
+    cast:["alison","botsitso","luke","tom"],
+    choices:[
+      {ic:"🥤",lbl:"<strong>Snack stakeout</strong> — Botsitso sets up a perfect lettuce trap and waits with infinite patience.",to:"s2_e1"},
+      {ic:"📹",lbl:"<strong>Luke rigs a bunny-cam</strong> — track Mielie's exact movements with live gimbal footage.",to:"s2_e2"}
+    ]
+  },
+  s2_e1:{
+    chapter:"Story Two · The Stakeout", num:"02", time:"10:10 AM", fill:50, art:"🥤", flag:"careful",
+    title:"The Stakeout",
+    body:[
+      "Botsitso sets a perfect lettuce-and-parsley trap — lights dimmed, green headphones off, absolutely still — and waits. Tom narrates in whispered hardboiled voiceover: <em>'The city never sleeps. Neither does the rabbit.'</em>",
+      "The energy drink sits untouched beside him. A full minute passes. Botsitso doesn't move a millimetre. Alison is somewhere behind them trying not to laugh and mostly succeeding. Tom rolls the die. It comes up six.",
+      "A nose appears in the doorframe. Whiskers. Then the full silhouette of Mielie, curious and slightly suspicious, inching toward the lettuce with professional caution.",
+      "<em>'Almost,'</em> says Botsitso, barely breathing. <em>'Almost.'</em>"
+    ],
+    cast:["botsitso","tom"],
+    choices:[{ic:"➡️",lbl:"Mielie's inches from the trap — <strong>but the clock is almost up.</strong>",to:"s2_climax"}]
+  },
+  s2_e2:{
+    chapter:"Story Two · Bunny-Cam Live", num:"02", time:"10:10 AM", fill:50, art:"📹", flag:"risky",
+    title:"Bunny-Cam Live",
+    body:[
+      "Luke decides the only way to track a fast rabbit is to commit to the bit completely — gimbal up, two-screen monitoring, a genuinely cinematic wide-angle chase sequence through the office corridors. <em>'If we're doing this, we're doing it properly,'</em> he says, and he means it in the best possible way.",
+      "The footage is, objectively, beautiful. It is also creating an absolute scene. Michelle ducks a flying lens cap (hair still flawless, somehow). Alison is laughing too hard to be useful. Chelane is sprinting after both the camera crew and the rabbit simultaneously.",
+      "Mielie, sensing the escalation, puts her head down and bolts for the lobby at full speed, a film crew in pursuit through an open-plan office. This is not the vibe for a new client arrival."
+    ],
+    cast:["luke","michelle","chelane"],
+    choices:[{ic:"➡️",lbl:"Mielie's heading for reception and so is the crew — <strong>to the lobby!</strong>",to:"s2_climax"}]
+  },
+  s2_amp:{
+    chapter:"Story Two · Chaos Magnet", num:"01", time:"9:40 AM", fill:28, art:"📣",
+    title:"Chaos Magnet",
+    body:[
+      "The Amplified floor. If anywhere in this building is going to attract a thrill-seeking, socially curious rabbit, it's the loudest room in the building. Chan immediately starts taking quiet bets on Mielie's location (Sprite Zero says: the kitchen fridge area). Eitan, bringing the gees, declares himself Head of Rabbit Logistics without being asked and starts constructing a humane lettuce corridor.",
+      "Navah appears in sunglasses number 208, treating the whole situation as a content opportunity and doing it so effortlessly you can't even be annoyed. Joanna moves calmly through the chaos making even the frantic search feel organised somehow — a genuine gift.",
+      "Max is flat on his stomach at desk level, making encouraging sounds in Mielie's direction, looking like an extremely earnest golden retriever. It's the most endearing thing anyone has ever seen."
+    ],
+    cast:["chan","eitan","navah","joanna","max"],
+    choices:[
+      {ic:"🥬",lbl:"<strong>Eitan's lettuce funnel</strong> — engineer the perfect humane trap.",to:"s2_a1"},
+      {ic:"📲",lbl:"<strong>Navah & Nurit livestream the hunt</strong> to the creator network.",to:"s2_a2"}
+    ]
+  },
+  s2_a1:{
+    chapter:"Story Two · Operation Lettuce Funnel", num:"02", time:"10:10 AM", fill:50, art:"🥬", flag:"careful",
+    title:"Operation Lettuce Funnel",
+    body:[
+      "Eitan's contraption is, against all reasonable expectation, a masterpiece. A gently sloping corridor of romaine, rocket, and one small carrot artfully placed at the end — engineering calibrated to guide one specific rabbit calmly toward a waiting box.",
+      "Max is flat at the receiving end, beanie slightly askew, making the smallest, most encouraging noises with the sincerity of a man who would genuinely do anything for a colleague's rabbit. Nurit is on two phones simultaneously but has paused both calls to watch. Even Chan has put down the Sprite Zero.",
+      "Mielie appears at the mouth of the funnel. She looks at the lettuce. She looks at Max. She considers the lettuce again. Then, slowly, she begins to hop.",
+      "The whole room holds its breath."
+    ],
+    cast:["eitan","max","nurit"],
+    choices:[{ic:"➡️",lbl:"The funnel is working — <strong>but the lobby door is about to open.</strong>",to:"s2_climax"}]
+  },
+  s2_a2:{
+    chapter:"Story Two · Live and Unhinged", num:"02", time:"10:10 AM", fill:50, art:"📲", flag:"risky",
+    title:"Live and Unhinged",
+    body:[
+      "Nurit, already on the phone (always on the phone), pivots seamlessly to livestreaming the Great Mielie Hunt to the creator network, who are immediately emotionally invested and sending supportive comments, three Temu rabbit toys, and a suggested 'Mielie's Adventure' creator brief. Real-time fan engagement.",
+      "Navah commentates like she's front row at fashion week — calm, hilarious, making Mielie seem like the most compelling personality on the internet today (she may be right). Lee-Ann dials in from Cape Town and gives surprisingly tactical rabbit-cornering advice from what sounds like a gym bus.",
+      "The stream hits 4,000 viewers. Mielie, clearly sensing her moment, makes a full-speed break for the lobby — directly toward the front door, toward daylight, toward freedom, toward the client's arriving car.",
+      "The stream chat goes absolutely wild."
+    ],
+    cast:["nurit","navah","leeann"],
+    choices:[{ic:"➡️",lbl:"Mielie's live to 4,000 people and bolting — <strong>to the lobby, now!</strong>",to:"s2_climax"}]
+  },
+  s2_climax:{
+    chapter:"Story Two · Ten to Eleven", num:"03", time:"10:50 AM", fill:88, art:"🚪",
+    title:"Ten Minutes to Eleven",
+    body:[
+      "It's 10:50. The client's car is pulling into the parking lot. You can see it through the window.",
+      "Laurence is already at reception in full host mode — shoes off (or Birkenstocks, fifty-fifty), beaming at whoever walks in, currently chewing gum that definitely belongs to someone else. He loves nothing more than a full building and a new face to welcome. He has absolutely no idea about the rabbit.",
+      "Malki is on a call in the corner, quietly re-allocating 'the rabbit situation' as a capacity line item without a flicker of judgement. In Portugal, on a webcam nobody noticed was on, Alexa is watching all of this over a morning coffee, saying nothing, smiling slightly.",
+      "And Mielie — <em>right there</em>, between you and the lobby — is perfectly visible to anyone who opens that front door in the next thirty seconds.",
+      "The car door opens. What's the move?"
+    ],
+    cast:["laurence","malki","alexa","joanna"],
+    choices:[
+      {ic:"🤫",lbl:"<strong>Scoop Mielie up</strong> and play it ice-cool. No one needs to know.",resolve:"s2:cool"},
+      {ic:"🌟",lbl:"<strong>Lean in completely</strong> — make Mielie the star attraction of the tour.",resolve:"s2:star"},
+      {ic:"📡",lbl:"<strong>Step back</strong> and trust Laurence and Alexa to handle whatever comes through that door.",resolve:"s2:laurence"}
+    ]
+  },
+
+  /* STORY 2 ENDINGS */
+  s2_endSmooth:{ending:true,badge:"Ending · Cool Under Pressure",time:"11:00 AM",fill:100,art:"😎",
+    title:"Smooth Operator",
+    body:[
+      "Two seconds before the door opens, you scoop Mielie up smoothly, pass her directly to Chelane without breaking stride, and pivot to face the arriving client with the calm energy of someone whose morning has been completely normal and pleasant.",
+      "The tour is flawless. The client is impressed. They keep commenting on how <em>calm</em> and together the whole agency feels — a real sense of control, they say. If they knew.",
+      "Mielie sits in Chelane's arms and washes her face with the absolute smugness of an animal who got exactly what she wanted: held, warm, and completely out of trouble. Chelane mouths <em>thank you</em> from across the room. Johan gives you a single, respectful nod.",
+      "<strong>Crisis invisible. Professionalism maintained. Somewhere, Alexa watched every second and sent a single heart emoji to nobody in particular.</strong>"
+    ]},
+  s2_endMascot:{ending:true,badge:"Ending · A Star Is Born",time:"11:00 AM",fill:100,art:"🐰",
+    title:"The Mascot Deal",
+    body:[
+      "You lean all the way in. By the time the client walks through the door, Mielie isn't a problem — she is the <em>headliner</em>. Navah has styled a tiny office lanyard around her neck. Botsitso has cut a twelve-second hype reel. Chan has already posted it.",
+      "The client's face goes from politely professional to completely delighted in about four seconds flat. By the end of the tour they're asking about Mielie specifically, wanting to know her schedule, her availability. <em>'Can she be in the campaign?'</em>",
+      "She can. She is. Mielie now has a signed Amplified contract, a formal brief, and — after some negotiation — a better day-rate than at least three humans in the building who will remain unnamed.",
+      "Chelane has never, in recorded Mama history, been more proud of anything. Lana is caught smiling twice and denies it both times. <strong>The client signs. The mascot reigns.</strong>"
+    ]},
+  s2_endLaurence:{ending:true,badge:"Ending · The Host With The Most",time:"11:00 AM",fill:100,art:"👑",
+    title:"The Host With The Most",
+    body:[
+      "You step back and trust the room. Laurence sweeps the client in with such enormous warmth, asking so many interested questions about their weekend and their family and their journey over, that a literal rabbit hopping across the boardroom table goes entirely unremarked upon.",
+      "The client does see Mielie. They just assume this is normal. In a Mama tour, it might be.",
+      "Later you'll learn that Alexa, watching on the webcam, had quietly messaged reception forty minutes ago: <em>'client arrives 11. if there is a rabbit in the lobby, it's fine, don't mention it, Laurence will handle it.'</em> She had seen the whole morning unfolding on the cameras and prepared accordingly.",
+      "The client leaves delighted. The contract is signed before lunch. Nobody mentions the bunny. <strong>Some things at Mama are simply understood, handled, and never spoken of again.</strong>"
+    ]},
+  s2_endCaught:{ending:true,bad:true,badge:"Bad Ending · Busted",time:"11:00 AM",fill:100,art:"🥬",
+    title:"Caught Red-Handed",
+    body:[
+      "You reach for the cool, composed scoop — but the risky path you took to get here means Mielie is faster and more suspicious than you expected, and she bolts sideways at exactly the wrong moment.",
+      "The door opens. The client steps in. The entire team is mid-crawl under various pieces of furniture. Cassidy is yelling a name that is not quite the rabbit's name into the server area. Eitan's lettuce funnel has collapsed. Storm is lying flat under a standing desk. Max has his arm fully extended under a cabinet.",
+      "The client blinks. Takes it all in. Then: <em>'…is this a normal Wednesday for you?'</em>",
+      "There is a long, beautiful, terrible silence. <em>'Yes,'</em> says Laurence, from somewhere, with complete conviction.",
+      "<strong>Mortifying. Survivable. Deeply, essentially on-brand. They came back the following week. Eitan braai'd for them. It worked.</strong>"
+    ]},
+  s2_endServer:{ending:true,bad:true,badge:"Bad Ending · Lights Out",time:"11:00 AM",fill:100,art:"🔌",
+    title:"Code Red in the Server Room",
+    body:[
+      "In the excitement of the grand Mielie reveal — the pivot from crisis to opportunity — the reaction startles her. She bolts. Straight through the office. Through the one door you left open. Into the server room.",
+      "There is a soft <em>chomp</em>. The kind of chomp that has meaning. Then the lights flicker. Then the Wi-Fi drops. Then everything goes dark in a very specific, very expensive-sounding way.",
+      "The client tours a creative agency lit entirely by phone torches while Storm crawls through the server room whispering genuine heartfelt apologies to a rabbit. Botsitso's hype reel is now found-footage horror. Ally is already trying to fix the network.",
+      "IT is called. It takes three hours. Luke films all of it on the gimbal out of instinct.",
+      "<strong>Iconic. Terrible. The server room footage becomes the agency showreel nobody asked for. Mielie is fine. The Wi-Fi is not.</strong>"
+    ]},
+  s2_endEscape:{ending:true,bad:true,badge:"Bad Ending · Gone Girl",time:"11:00 AM",fill:100,art:"🚪",
+    title:"The Great Escape",
+    body:[
+      "You trust the room one beat too long. As the client opens the door, Mielie spots the rectangle of blue sky behind them and makes her decision immediately, irrevocably, and at full speed. She rockets out the front door into the car park.",
+      "What follows is fifteen marketing professionals — in a mixture of business casual, tracksuits, and, in Laurence's case, Birkenstocks — sprinting between parked cars in pursuit of one extremely fast rabbit who has decided today is her day.",
+      "Max makes the catch. It is genuinely heroic. A full dive, both arms extended, his beanie sacrificed to the tarmac, Mielie safe in his hands. He stands up. He looks at the client. The client is watching from the doorway, mouth slightly open.",
+      "<em>'We got her,'</em> says Max, breathing hard, holding a rabbit in the parking lot.",
+      "<strong>They signed the contract. Out of respect, mostly. Mielie gets an 'honorary catch' trophy from Chan. Max gets a new beanie from Nurit. It arrives from Temu in two days.</strong>"
+    ]},
+
+  /* ============ STORY 3 - THE MAMA CULT ============ */
+  s3_start:{
+    chapter:"Story Three · Day One", num:"00", time:"Day 1", fill:6, art:"🌀",
+    title:"Welcome to the Family",
+    body:[
+      "It's your first week at Mama. Everyone is suspiciously, radiantly, <em>specifically</em> happy. Not politely happy, or professionally happy, but the kind of happy that makes you check the walls for cameras.",
+      "At Creative Breakfast there's a chant you don't know the words to yet. Laurence keeps saying <em>'we're not a company, we're a family'</em> with the quiet conviction of someone who has been saying it so long it's simply become true.",
+      "Cassidy hands you a matching tracksuit on day one and calls it 'the uniform of the enlightened,' grinning in a way that could mean either joke or prophecy. Chelane hugs you for slightly too long, warmly, with complete sincerity. Max looks at you like you are the best thing that has ever walked in a door. Joanna knows your coffee order, your star sign, and your five-year career ambitions — and she's only met you twice.",
+      "It is wonderful. It is <em>so</em> wonderful. Somewhere in the back of your head, a small voice: <em>...is this a cult?</em>",
+      "There's only one way to find out."
+    ],
+    cast:["laurence","cassidy","joanna"],
+    choices:[
+      {ic:"🕯️",lbl:"Investigate <strong>THE RITUALS.</strong> What's with the chanting, the tracksuits, the Thursday traditions?",to:"s3_rituals"},
+      {ic:"👑",lbl:"Investigate <strong>THE LEADERSHIP.</strong> Who actually runs this place and how?",to:"s3_leader"},
+      {ic:"🤗",lbl:"Investigate <strong>THE BELIEVERS.</strong> Why is every single person here this happy?",to:"s3_believers"}
+    ]
+  },
+  s3_rituals:{
+    chapter:"Story Three · The Sacred Texts", num:"01", time:"Day 3", fill:28, art:"🕯️",
+    title:"The Sacred Texts",
+    body:[
+      "You dig into Mama's traditions with archaeological seriousness. The Creative Breakfast chant. The Slack emoji customs. The way certain phrases get repeated until they become law.",
+      "You find Tom. Tom writes all of it — the chants, the inside jokes, the legendary copy-pastas — in the voice of an undercover comedian who has never once been told to stop and apparently never will be. Half the scripture turns out to be dice references. The other half is surprisingly moving.",
+      "Joanna runs a 'feeling seen' circle so warm that a freelancer once, unprompted, extended their contract for a year afterward. Zissy hands you a green smoothie for the journey. She does this for everyone. She just does it.",
+      "The rituals are all real. None of them are sinister. That, somehow, makes them more suspicious."
+    ],
+    cast:["tom","joanna","zissy"],
+    choices:[
+      {ic:"📣",lbl:"<strong>Join the chant.</strong> Full immersion. When in Rome.",to:"s3_chant"},
+      {ic:"🎙️",lbl:"<strong>Secretly record it</strong> as evidence for later analysis.",to:"s3_record"}
+    ]
+  },
+  s3_chant:{
+    chapter:"Story Three · The Chant", num:"02", time:"Day 5", fill:50, art:"📣", flag:"believer",
+    title:"You Know The Words Now",
+    body:[
+      "You join in. And — wait. It's <em>fun?</em> It's actually fun. By the second chorus you're fully in, harmonising without deciding to. Botsitso drops a beat from across the room because of course he does. Leah does the chant in four different accents back to back. Eitan brings the gees so hard that a nearby office plant visibly perks up.",
+      "Alison is laughing and reapplying Blistex. Tom has stopped writing — he's watching with the quiet satisfaction of someone whose art is being performed correctly.",
+      "You feel, for the first time in your professional life, genuinely, inexplicably <em>part of something</em>. Suspicious. Wonderful. Both at once.",
+      "The Wednesday is still coming. And with it, the question of whether you can keep both eyes open at the same time."
+    ],
+    cast:["botsitso","leah","eitan","alison"],
+    choices:[{ic:"➡️",lbl:"You're in it now, fully — <strong>but Wednesday is coming and it will require a decision.</strong>",to:"s3_climax"}]
+  },
+  s3_record:{
+    chapter:"Story Three · The Evidence", num:"02", time:"Day 5", fill:50, art:"🎙️", flag:"skeptic",
+    title:"Gathering Evidence",
+    body:[
+      "You quietly record a full Creative Breakfast for evidence. Later that night, reviewing the footage with a notepad, you begin to notice things.",
+      "The matching energy. The way everyone says <em>'we love that for you'</em> with identical sincere warmth. Nurit, gifting people for no discernible reason — a tea, a small parcel from Temu, a handwritten note. Laurence's unnatural ability to make any room feel like a warm, safe place just by entering it.",
+      "Your evidence wall has string on it now. The string connects everything: the chant, the warmth, the Wednesday rituals, the matching tracksuits, the fact that nobody ever seems to be having a bad day for very long.",
+      "The string is red. You bought red specifically. You don't know when you decided to do that.",
+      "Wednesday approaches."
+    ],
+    cast:["nurit","laurence"],
+    choices:[{ic:"➡️",lbl:"The wall of string is complete — <strong>and Wednesday will demand a choice.</strong>",to:"s3_climax"}]
+  },
+  s3_leader:{
+    chapter:"Story Three · The Power Structure", num:"01", time:"Day 3", fill:28, art:"👑",
+    title:"Follow The Power",
+    body:[
+      "Laurence is the obvious answer — magnetic, generous, never happier than when the building is full and there's energy in the air. But the more closely you watch, the more you sense that the <em>real</em> architecture of this place runs somewhere else.",
+      "Every important thing, every smooth outcome, every crisis that resolved itself before it fully arrived — traces back, in some way, to Alexa. She lives in Portugal. She attends things via screen. Nobody can quite explain what she does in a sentence. Ask Malki and she goes quiet and slightly reverent, the way people do about weather gods.",
+      "You need to go further."
+    ],
+    cast:["laurence","alexa","malki"],
+    choices:[
+      {ic:"🍗",lbl:"<strong>Request an audience with Laurence.</strong> Get the founder's version of the truth.",to:"s3_audience"},
+      {ic:"🔍",lbl:"<strong>Investigate Alexa directly.</strong> What does she actually do?",to:"s3_alexa"}
+    ]
+  },
+  s3_audience:{
+    chapter:"Story Three · An Audience With The Founder", num:"02", time:"Day 5", fill:50, art:"🍗", flag:"believer",
+    title:"An Audience With The Founder",
+    body:[
+      "Laurence sits you down, offers you gum — yours, somehow — and just asks about you. Your life, your background, what you care about, what you want to build. He remembers a detail you mentioned in passing on day one. Not in a performative way. Just because he listened.",
+      "By the end of it you would follow this man into a Nando's queue of any length, in any weather, without question.",
+      "There's no agenda. That's the part you can't shake. No evaluation, no positioning, no corporate warmth. He just <em>genuinely</em> likes having people around. That might actually be the whole story.",
+      "You leave the room unsettled in the best way, feeling seen and slightly disarmed."
+    ],
+    cast:["laurence"],
+    choices:[{ic:"➡️",lbl:"You'd do anything for this man — <strong>but Wednesday will test what that really means.</strong>",to:"s3_climax"}]
+  },
+  s3_alexa:{
+    chapter:"Story Three · The Woman In Portugal", num:"02", time:"Day 5", fill:50, art:"🔍", flag:"skeptic",
+    title:"The Woman In Portugal",
+    body:[
+      "You try to investigate Alexa properly. Her calendar is a locked vault. Her title contains the word <em>'and'</em> four times. People's faces do something complicated when you ask what she does. Ask Malki and she pauses the call.",
+      "You send a carefully worded message. Nothing. You try to find her in a meeting. She is never quite where you expected. Her presence is everywhere and located nowhere.",
+      "Then your screen flickers. A single message from an address you don't recognise: <em>'I know you're looking. It's okay. — A x'</em>",
+      "You have never felt more seen and more watched simultaneously. The question is whether those are different things.",
+      "Wednesday is coming, and Alexa knows you're coming."
+    ],
+    cast:["alexa"],
+    choices:[{ic:"➡️",lbl:"She knows you know — <strong>and Wednesday will make everyone declare themselves.</strong>",to:"s3_climax"}]
+  },
+  s3_believers:{
+    chapter:"Story Three · The Devoted", num:"01", time:"Day 3", fill:28, art:"🤗",
+    title:"The Truly Devoted",
+    body:[
+      "You seek out the most deeply devoted members — the ones whose happiness seems structurally impossible to fake. Chelane, who loves every colleague and every project and her bunny Mielie with completely equal warmth. Max, who is essentially a golden retriever in beanie form and would happily do anything for any colleague, any time, no questions. Eitan, who has already invited you to three braais this week and means every single one.",
+      "Their devotion is total. Their warmth is relentless. You came looking for cracks, for performance, for the tell that reveals the whole thing as theater.",
+      "You find nothing. You are instead being, very gently, absorbed into something warm.",
+      "This is the most suspicious outcome of all."
+    ],
+    cast:["chelane","max","eitan"],
+    choices:[
+      {ic:"💕",lbl:"<strong>Let the warmth in.</strong> Stop resisting and see what happens.",to:"s3_lovebomb"},
+      {ic:"🕵️",lbl:"<strong>Keep your distance</strong> and interrogate harder. There has to be a crack somewhere.",to:"s3_interrogate"}
+    ]
+  },
+  s3_lovebomb:{
+    chapter:"Story Three · Fully Embraced", num:"02", time:"Day 5", fill:50, art:"💕", flag:"believer",
+    title:"Fully Embraced",
+    body:[
+      "You stop resisting. The hugs. The <em>'proud of you's.</em> The small genuine moments of being supported by people who have known you less than a week but somehow already seem to understand what you need.",
+      "Michelle, in passing, gives you a compliment so specific and sincere that your self-esteem actually recalibrates upward. Storm makes a dad joke so wholesomely timed that something heals in your chest. Johan's laugh — that world-famous laugh — makes the room feel like a home.",
+      "You are warm. You are safe. You are, possibly, still in a cult. You have decided you don't mind. You will figure that out at the Wednesday.",
+      "For now: you belong here. Maybe that's just what it is."
+    ],
+    cast:["michelle","storm","johan"],
+    choices:[{ic:"➡️",lbl:"You belong here — <strong>and Wednesday will make it official one way or another.</strong>",to:"s3_climax"}]
+  },
+  s3_interrogate:{
+    chapter:"Story Three · Looking For Cracks", num:"02", time:"Day 5", fill:50, art:"🕵️", flag:"skeptic",
+    title:"Looking For Cracks",
+    body:[
+      "You push harder. <em>Surely</em> no one is actually this happy at work. You interrogate Lana — who looks like she will tell you something true and slightly uncomfortable, which she does, but it's just that she really loves trout and prefers not to be hugged. Nothing incriminating.",
+      "You corner Ally, who gets genuinely excited about explaining the whole culture using three AI tools, a whiteboard, and the enthusiasm of someone who actually loves where they work. Suspicious in its own way but not sinister.",
+      "You grill Lee-Ann, dialling in from her gym bus, who just laughs. Not a dismissive laugh. A genuine one.",
+      "No cracks. Only people who, against all reasonable probability, actually seem to like each other. This is, objectively, the most alarming finding of the investigation."
+    ],
+    cast:["lana","ally","leeann"],
+    choices:[{ic:"➡️",lbl:"No cracks found — <strong>only the Wednesday initiation ahead.</strong>",to:"s3_climax"}]
+  },
+  s3_climax:{
+    chapter:"Story Three · The Initiation", num:"03", time:"Creative Breakfast", fill:86, art:"🌅",
+    title:"The Initiation",
+    body:[
+      "It's Wednesday. Creative Breakfast. The whole building is here — every desk, every screen, every face. There are pastries. There is the chant. There is a tracksuit in your size draped over the back of your chair.",
+      "Laurence is glowing in the centre of the room. Joanna is forming her circle. Cassidy is holding the official Mama tracksuit aloft like a sacred robe and absolutely believing it. Malki is on a call with what sounds like, specifically, the heavens.",
+      "On the big screen: Alexa, dialling in from Portugal, coffee in hand, watching with the calm of someone who already knows how this ends.",
+      "<em>'It's time,'</em> says Laurence, warmly, meaning it completely. <em>'Are you one of us?'</em>",
+      "The whole room turns to you. Every face. What do you do?"
+    ],
+    cast:["laurence","cassidy","joanna","alexa"],
+    choices:[
+      {ic:"🙌",lbl:"<strong>Join fully.</strong> Put on the tracksuit. Embrace the Mama way.",resolve:"s3:join"},
+      {ic:"🚪",lbl:"<strong>Expose everything.</strong> Present the wall of string. Name the cult.",resolve:"s3:expose"},
+      {ic:"📡",lbl:"<strong>Ask Alexa directly</strong> for the truth, right now, in front of everyone.",resolve:"s3:alexa"}
+    ]
+  },
+
+  /* STORY 3 ENDINGS */
+  s3_endOneOfUs:{ending:true,badge:"Ending · Welcome Home",time:"Wednesday",fill:100,art:"🤗",
+    title:"One Of Us",
+    body:[
+      "You put on the tracksuit. You learn the chant. You eat the breakfast pastry. You join the circle.",
+      "And the big reveal, the thing you've been investigating all week: there is no cult. There is only a team that genuinely, relentlessly, with real effort and real care, <em>looks after each other</em>. That celebrates your wins like they're their own. That covers for you on your worst day because they remember what their worst day felt like. That means every 'proud of you' completely.",
+      "The warmth was real the whole time. It was never a performance. It is just what Mama is.",
+      "Cassidy hands you a Gloot energy drink and says something loud and sincere. Petrus nods. Max cheers.",
+      "<strong>Welcome to the family. The tracksuit, it turns out, is extremely comfortable. You will wear it every day for the rest of your career here.</strong>"
+    ]},
+  s3_endChosen:{ending:true,badge:"Ending · The Chosen One",time:"Wednesday",fill:100,art:"🌟",
+    title:"The Chosen One",
+    body:[
+      "You open your mouth to expose the cult. You have the wall of string. You have the evidence. You have prepared a three-point case.",
+      "Instead you burst into happy tears and ask where to sign up.",
+      "It turns out you didn't want to escape. You wanted to be <em>chosen</em>. And in walking into that initiation, evidence in hand, you proved exactly the thing Mama looks for: someone who pays attention, who cares enough to investigate, who asks real questions.",
+      "Johan and Lana induct you into the honorary 011 crew (Lana shakes your hand once, formally, but she means it). Chelane lets you hold Mielie. This is the highest honour Mama bestows.",
+      "<strong>You came as a skeptic. You leave as a legend. The string wall is framed and hung in the kitchen. It is treated as art.</strong>"
+    ]},
+  s3_endTruth:{ending:true,badge:"Ending · The Revelation",time:"Wednesday",fill:100,art:"🕯️",
+    title:"The Alexa Revelation",
+    body:[
+      "You ask Alexa directly. The room goes very quiet. Alexa sets down her coffee.",
+      "<em>'Mama isn't a cult,'</em> she says, with the calm of someone who's had this conversation before, in her head, and is now finally having it out loud. <em>'Mama is a family that files its timesheets.'</em>",
+      "She admits something then: she engineered the feeling deliberately. Not the warmth — the warmth is real, she can't manufacture that — but the slightly uncanny quality of it. The sense that something more than a job is happening here. Because the people who notice how good it is, who question it rather than accepting it passively, are exactly the people who'll care enough to protect it when it needs protecting.",
+      "<em>'You passed,'</em> she says. <em>'Love you, byeee.'</em> The screen goes dark.",
+      "<strong>You have never felt more welcome, more surveilled, and more completely, permanently at home. Both feelings live in you now, side by side, forever.</strong>"
+    ]},
+  s3_endTooDeep:{ending:true,bad:true,badge:"Bad Ending · Overcorrected",time:"Three Months Later",fill:100,art:"🌀",
+    title:"In Too Deep",
+    body:[
+      "You spent so long being suspicious that when you finally joined, you joined <em>hard</em>. Too hard. With the energy of someone who has been holding something back for weeks and is releasing all of it at once.",
+      "You now own seven tracksuits. You refer to external agencies as 'the uninitiated.' You've developed a chant variation that Cassidy — <em>Cassidy</em> — finds slightly intense. You correct people's pronunciation of the chant. There are people at Mama who've been here for years and do not correct pronunciation.",
+      "Alexa is monitoring the situation from Portugal with the calm, measured concern of someone who created conditions that work 99% of the time.",
+      "<strong>The skeptic became the zealot. Nobody saw it coming. Everyone, quietly, is rooting for your return to balance. The tracksuits are genuinely nice though.</strong>"
+    ]},
+  s3_endExcommunicated:{ending:true,bad:true,badge:"Bad Ending · The Accusation",time:"Wednesday",fill:100,art:"🚪",
+    title:"The Incident at Creative Breakfast",
+    body:[
+      "You stand up. Voice steady. You present the wall of string — the tracking, the evidence, the three-point case. You have practised this.",
+      "There is a long silence. Then Tom, very gently, points out that the sinister 'initiation chant' is just the lunch order. That the 'matching uniforms' are optional and the company gives them away for free. That the 'ritual gift-giving' is Nurit being Nurit.",
+      "You have, in front of the entire company, publicly accused Joanna — who has never harmed a person in her life and remembers every colleague's birthday — of operating a brainwashing cult.",
+      "Joanna looks at you with complete, unguarded kindness. She still makes you feel seen. The guilt of that is immense.",
+      "<strong>You are now, officially, the weird one. Time and Joanna's patience will heal this. It will take a while. Tom is writing it up. It's kind.</strong>"
+    ]},
+  s3_endLostPlot:{ending:true,bad:true,badge:"Bad Ending · The Spiral",time:"Wednesday",fill:100,art:"👁️",
+    title:"Lost The Plot",
+    body:[
+      "You went full conspiracy. String everywhere — red, yellow, black, colour-coded by suspicion level. You decoded hidden patterns in the Slack emoji reactions. You found meaning in the Creative Breakfast pastry arrangement (clockwise croissants: concerning). You stayed up until 2 AM cross-referencing Malki's call times.",
+      "It turns out the only genuinely unhinged presence in the entire Mama building was you. Everyone else was just... happy at work. Cooperating. Caring about each other. Enjoying their jobs.",
+      "A concept, it turns out, you could no longer recognise when you looked directly at it.",
+      "Tom is writing a six-episode comedy series about it. He says it's the most inspired thing that's happened to his writing career. That, somehow, stings most of all.",
+      "<strong>The string wall is taken down. It is replaced with a framed poster that says: 'Done > Perfect.' Nobody explains why.</strong>"
+    ]},
+
+  /* ============ STORY 4 - MAMA FRIENDSHIP ISLAND ============ */
+  s4_start:{
+    chapter:"Story Four · Day One", num:"00", time:"Day 1", fill:6, art:"🌴",
+    title:"Welcome to Friendship Island",
+    body:[
+      "Tonight, on <strong>Mama Friendship Island</strong>. A sun-drenched villa somewhere warm and impractical. Fairy lights. A fire pit. An inexplicable supply of Sprite Zero and Gloot energy drinks in the fridge.",
+      "Tom is doing the voiceover. Tom was born for the voiceover. He's been waiting for this moment since he first picked up a die.",
+      "You step onto the terrace in your finest co-ords. The islanders turn. Somewhere in a control room in Portugal, a producer is watching all of this very calmly. The rules are simple: form the strongest, most ride-or-die friendship in the villa and survive every recoupling. Love Island, but for actual mates.",
+      "Your first choice could define your entire journey. Which crew calls to you?"
+    ],
+    cast:["tom"],
+    choices:[
+      {ic:"🎉",lbl:"The <strong>LOUD & FUN</strong> crew. Maximum chaos. Maximum laughs. Minimum filter.",to:"s4_loud"},
+      {ic:"💅",lbl:"The <strong>CALM & ICONIC</strong> crew. Effortlessly put-together legends with impeccable energy.",to:"s4_calm"},
+      {ic:"💛",lbl:"The <strong>WHOLESOME</strong> crew. Pure of heart, soft of soul, would die for you.",to:"s4_wholesome"}
+    ]
+  },
+  s4_loud:{
+    chapter:"Story Four · The Loud Ones", num:"01", time:"Day 3", fill:28, art:"🎉",
+    title:"The Loud Ones",
+    body:[
+      "You couple up with the chaos corner: Cassidy (volume: maximum, tracksuit: pristine, energy drink: already open at 9 AM), Chan (running commentary on everything, Sprite Zero in hand, jokes that would get the show un-broadcast), and Leah, who introduces herself in three accents before you know her real one — she's from Cape Town, technically, but she speaks in everywhere.",
+      "It is immediately the most fun you've ever had at a friendship villa. The producers are watching with professional delight. Alison, passing through, laughs at the three of you for a full minute before she can stop.",
+      "The first challenge — 'Spill The Tea' — is designed specifically for this crew, because someone on the production team knows exactly who they cast. The question is: when the cameras are rolling and the tea is hot, do you stay loyal or do you reach for the spoon?",
+      "This will define what kind of friend you are."
+    ],
+    cast:["cassidy","chan","leah"],
+    choices:[
+      {ic:"🤝",lbl:"<strong>Stay loyal</strong> to your bestie no matter what tea they try to force out of you.",to:"s4_l_loyal"},
+      {ic:"🌶️",lbl:"<strong>Stir the pot.</strong> The cameras are right there and the moment is too good to waste.",to:"s4_l_messy"}
+    ]
+  },
+  s4_l_loyal:{
+    chapter:"Story Four · Ride Or Die", num:"02", time:"Day 6", fill:52, art:"🤝", flag:"loyal",
+    title:"Ride Or Die",
+    body:[
+      "When the challenge attempts to turn you against each other, you don't even pause. You back your friend completely, clearly, without hesitation. The challenge host — Eitan, who was cast specifically because he cannot keep a poker face — looks genuinely moved.",
+      "Ally, watching from the sun loungers with a notebook, immediately posts: <em>'this is the most wholesome moment in reality TV history and I will defend that position.'</em> It gets 12,000 likes.",
+      "Your friendship is now, officially, Strong. With a capital S. The villa knows it. The cameras love it. Your bestie squeezes your hand.",
+      "Chan has a look on her face that says she's been waiting for someone like you this whole show. That's worth more than any prize."
+    ],
+    cast:["ally","eitan"],
+    choices:[{ic:"➡️",lbl:"Loyalty proven, friendship real — <strong>now to the final.</strong>",to:"s4_climax"}]
+  },
+  s4_l_messy:{
+    chapter:"Story Four · Pot, Meet Spoon", num:"02", time:"Day 6", fill:52, art:"🌶️", flag:"messy",
+    title:"Pot, Meet Spoon",
+    body:[
+      "You stir. Oh, you <em>stir</em>. You drop one perfectly-timed, precisely calibrated piece of tea into the challenge and the villa erupts. It is genuinely incredible television. Botsitso, sound-tracking the whole thing from the villa speakers, drops in a beat that makes the moment ten times worse and twenty times better.",
+      "The producers are in their control room giving each other silent looks of pure professional joy. Tom, narrating live, ad-libs a line that will be in the compilation reel forever.",
+      "Your bestie is giving you a Look. Not a bad Look. A <em>you did this to us and I will remember this</em> Look. Somewhere between love and warning.",
+      "The final will remember everything. Every spoon. Every stir."
+    ],
+    cast:["botsitso","tom"],
+    choices:[{ic:"➡️",lbl:"Chaos delivered — <strong>but the final has a long memory.</strong>",to:"s4_climax"}]
+  },
+  s4_calm:{
+    chapter:"Story Four · The Iconic Ones", num:"01", time:"Day 3", fill:28, art:"💅",
+    title:"The Iconic Ones",
+    body:[
+      "You couple up with the effortlessly cool: Britney (calm, tea, misses her two dogs, married and glowing about it), Navah (different sunglasses every single day, makes you feel like the most interesting person alive within thirty seconds of meeting you), and Michelle, whose villa hair appears to defy humidity, gravity, and the general laws of nature.",
+      "You are collectively the best-dressed friendship group this island has ever hosted. The camera operators angle toward you by default. Nurit, watching from the day beds, sends everyone gift parcels 'just because.'",
+      "The first recoupling is looming. In the calm, cool villa, the question is the same as everywhere else: loyalty or strategy? Heart or head?",
+      "Cool heads must decide."
+    ],
+    cast:["britney","navah","michelle"],
+    choices:[
+      {ic:"💞",lbl:"Be the <strong>devoted, unshakeable ride-or-die</strong> your bestie deserves.",to:"s4_c_loyal"},
+      {ic:"😎",lbl:"Play it cool. <strong>Keep your options open.</strong> Friendship is complicated.",to:"s4_c_messy"}
+    ]
+  },
+  s4_c_loyal:{
+    chapter:"Story Four · Quietly Devoted", num:"02", time:"Day 6", fill:52, art:"💞", flag:"loyal",
+    title:"Quietly Devoted",
+    body:[
+      "No drama, no declarations. Just presence. You show up for your friend in the small, real, consistent ways that actually matter: the check-in after a hard challenge, the remembered detail, the showing up when there's no audience.",
+      "Lee-Ann, the villa's wise elder (strategising friendships from a sun lounger the way she would from a gym bus), watches with quiet approval. Zissy prepares everyone a nutritious villa breakfast. Storm, watching from his corner, says: <em>'That's real friendship. That's the whole thing right there.'</em>",
+      "It's not loud. It won't trend. But it is, unmistakably, unbreakable. The strongest bonds rarely make the highlight reel.",
+      "But they win the final."
+    ],
+    cast:["leeann","zissy","storm"],
+    choices:[{ic:"➡️",lbl:"Quiet and unbreakable — <strong>the final will prove it.</strong>",to:"s4_climax"}]
+  },
+  s4_c_messy:{
+    chapter:"Story Four · Options Open", num:"02", time:"Day 6", fill:52, art:"😎", flag:"messy",
+    title:"Keeping Options Open",
+    body:[
+      "You play it cool. Maybe too cool. One eye on your bestie, one eye on a potential new connection across the villa who seems to have a lot of the same energy as you. It's not betrayal. It's just... awareness of options. It's strategic.",
+      "It is also exactly the kind of thing that earns you a dramatic recoupling speech with your name in it, delivered at the firepit, in front of everyone, with the full soundtrack treatment from Botsitso.",
+      "Navah lowers her sunglasses to look at you. She puts them back on slowly. That's never a good sign.",
+      "The final remembers everything."
+    ],
+    cast:["navah","botsitso"],
+    choices:[{ic:"➡️",lbl:"Options open, consequences incoming — <strong>the final decides.</strong>",to:"s4_climax"}]
+  },
+  s4_wholesome:{
+    chapter:"Story Four · The Soft Ones", num:"01", time:"Day 3", fill:28, art:"💛",
+    title:"The Soft Ones",
+    body:[
+      "You couple up with the purest souls in the villa: Max (a literal golden retriever in a beanie who loves every single person with equal genuine intensity), Joanna (the one who makes every islander feel like the main character, even during eliminations, which is a remarkable skill), and Storm, who showed you fourteen photos of his daughter within the first hour and you looked at all of them properly.",
+      "It is so profoundly wholesome the producers had an emergency meeting to discuss whether there was enough tension. There is a challenge incoming designed specifically to test how deep this friendship actually runs.",
+      "Luke, watching from the cameras, tells his wife that evening it's the most genuine thing he's filmed all season. She agrees immediately. This is high praise from both of them."
+    ],
+    cast:["max","joanna","storm"],
+    choices:[
+      {ic:"🥹",lbl:"<strong>Go all-in</strong> on the friendship. Heart completely open, no safety net.",to:"s4_w_loyal"},
+      {ic:"👀",lbl:"<strong>Secretly develop a side graft</strong> with someone else's bestie. Just in case.",to:"s4_w_messy"}
+    ]
+  },
+  s4_w_loyal:{
+    chapter:"Story Four · Open Hearted", num:"02", time:"Day 6", fill:52, art:"🥹", flag:"loyal",
+    title:"Open Hearted",
+    body:[
+      "You hold nothing back. Complete openness. You tell your friends what they mean to you, unprompted, at the fire pit on day five, and you mean all of it.",
+      "Luke films it from behind a plant, trying not to get in shot, and says quietly into his radio that this is the best thing the show has ever captured.",
+      "Alison, watching the edit back later, cries and reapplies Blistex in one smooth motion. The villa goes quiet in the good way. Even the producers in the control room stop talking.",
+      "You are, officially, the friendship the whole nation is routing for. You didn't try to be. You just were.",
+      "That's the whole thing."
+    ],
+    cast:["luke","alison"],
+    choices:[{ic:"➡️",lbl:"Hearts wide open, bonds unbreakable — <strong>to the final.</strong>",to:"s4_climax"}]
+  },
+  s4_w_messy:{
+    chapter:"Story Four · The Quiet Graft", num:"02", time:"Day 6", fill:52, art:"👀", flag:"messy",
+    title:"The Quiet Graft",
+    body:[
+      "You like your wholesome crew. You genuinely do. But you've spotted someone else's bestie across the villa and you feel a pull. You begin the quiet graft — the lingering firepit conversations that go just a beat too long, the shared snacks that are technically communal but directionally specific.",
+      "Dani, watching the CCTV feed from Durban like it's a complex animation she's studying frame by frame, sees every single moment. She sends a single message to the group chat: a magnifying glass emoji.",
+      "Nobody knows what it means. Somehow everyone knows what it means.",
+      "Whether it pays off or blows up is entirely down to one night at the final."
+    ],
+    cast:["dani"],
+    choices:[{ic:"➡️",lbl:"The graft is quietly on — <strong>the final will decide everything.</strong>",to:"s4_climax"}]
+  },
+  s4_climax:{
+    chapter:"Story Four · The Final", num:"03", time:"The Final", fill:88, art:"🏝️",
+    title:"The Final Recoupling",
+    body:[
+      "The final. Fairy lights everywhere. The whole villa assembled. A fire pit that Eitan single-handedly over-prepared for.",
+      "A bombshell has just arrived: Johan, fashionably late, best laugh in the room within thirty seconds of entering, with Lana one step behind (she's here for the catering and, she's confirmed, the rumoured trout course). Botsitso is DJing the whole thing live from the corner. Nurit is on the phone giving running updates to the outside world. Chan is filming TikTok content simultaneously.",
+      "Laurence hosts, beaming, absolutely in his element. The producer pulling every string from a control room in Portugal? Alexa. Obviously.",
+      "<em>'Islanders,'</em> says Tom, voice filling the villa. <em>'It's time to choose your friendship. For the final time — what's it gonna be?'</em>"
+    ],
+    cast:["johan","lana","laurence","alexa","chan"],
+    choices:[
+      {ic:"💍",lbl:"<strong>Stay completely loyal</strong> to your bestie, right to the very end.",resolve:"s4:loyal"},
+      {ic:"📣",lbl:"<strong>Make a grand public declaration</strong> — say out loud exactly what this friendship means.",resolve:"s4:declare"},
+      {ic:"🔄",lbl:"<strong>Switch</strong> for what you think is a stronger connection.",resolve:"s4:switch"}
+    ]
+  },
+
+  /* STORY 4 ENDINGS */
+  s4_endWinners:{ending:true,badge:"Ending · The Champions",time:"The Final",fill:100,art:"🏆",
+    title:"Friendship Island Winners",
+    body:[
+      "Loyal from day one to the last night of the final. You and your ride-or-die are crowned the strongest friendship on the island — not because you were the most entertaining, or the most dramatic, but because when the pressure was real, you showed up. Every time.",
+      "The prize: a year of Nando's and a bond that will outlast the show, the edit, every reunion special, and probably several careers.",
+      "Tom narrates your victory walk in the voice he's been saving for exactly this moment. It is the best three minutes of voiceover in the history of the format.",
+      "Laurence is somehow there in person by the end of the night. Nobody knows when he arrived. He's eating someone's celebratory chicken. He is beaming.",
+      "<strong>Loyalty won. It always does, in the end, in this building and on this island and everywhere else that matters.</strong>"
+    ]},
+  s4_endFanFav:{ending:true,badge:"Ending · Nation's Favourite",time:"The Final",fill:100,art:"💛",
+    title:"Nation's Favourite",
+    body:[
+      "Your grand declaration lands exactly right — heartfelt, slightly chaotic, completely and unmistakably sincere. The kind of speech that sounds like someone who means it because they do.",
+      "The public vote floods in. You are, unanimously, the friendship of the entire series. Navah frames the clip from her phone and posts it within thirty seconds. Joanna says she has never been prouder of anyone, which makes at least four people cry, which makes Alison reach for the Blistex.",
+      "Chan posts the TikTok. It gets half a million views before midnight. Max cheers from wherever he is, at whatever volume.",
+      "You didn't just win a show. You became the thing people come back and watch again.",
+      "<strong>Iconic. Beloved. The blueprint for what friendship looks like when you stop trying to manage it and just feel it.</strong>"
+    ]},
+  s4_endIconic:{ending:true,badge:"Ending · The Redemption Arc",time:"The Final",fill:100,art:"✨",
+    title:"The Redemption Arc",
+    body:[
+      "You switched. Everyone held their breath. Your original crew watched. The villa braced for the ending they expected.",
+      "And then: against every prediction, against the edit, against all narrative logic — you found your actual person. The graft was real. The connection was real. You'd been coupled with a warm, wonderful crew, but not quite <em>your</em> crew.",
+      "Messy start, iconic finish. The villa weeps collectively. Even Lana, in the back row, sheds a single completely dignified tear and immediately, firmly, denies it to everyone who asks.",
+      "Botsitso's soundtrack for the moment is perfect. Tom narrates it like an Oscar film. The redemption arc the nation desperately needed.",
+      "<strong>Sometimes the messy route is the honest one. Sometimes you have to switch to find your way home.</strong>"
+    ]},
+  s4_endMessy:{ending:true,bad:true,badge:"Bad Ending · The Reckoning",time:"The Final",fill:100,art:"🎬",
+    title:"Too Messy For The Villa",
+    body:[
+      "You stayed loyal at the final. Clean, clear, correct. But the villa has a long memory, and it remembered every time you stirred, every spoon you picked up, every piece of tea you served when it wasn't your tea to serve.",
+      "When the public votes come in, the decision is gentle but clear: the drama was entertaining, and everyone loved watching it, but they didn't want to <em>live next door to it</em>.",
+      "You exit to a farewell montage scored, lovingly and brutally, by Botsitso — the most emotionally precise three minutes of music anyone on this island will ever hear in their name.",
+      "Tom narrates: <em>'They came for friendship and delivered content instead. The two are not always the same.'</em>",
+      "<strong>You'll get the redemption edit at the reunion. The producers loved you. For what that's worth — which is, honestly, quite a lot.</strong>"
+    ]},
+  s4_endDumped:{ending:true,bad:true,badge:"Bad Ending · Friend-Dumped",time:"The Final",fill:100,art:"💔",
+    title:"The Grand Rejection",
+    body:[
+      "You make the grand declaration. Heart fully in hand. You've prepared nothing, you're saying it all live, and every single word is true.",
+      "It lands with a sound like a door closing quietly in an empty room.",
+      "Your bestie had already, quietly, chosen someone else. Not badly. Not dramatically. Just honestly. They'd found their person during the weeks you were looking the other way.",
+      "The villa winces in collective sympathy. Chan looks down. Max starts to reach for his beanie to offer it.",
+      "You leave the island in the taxi of shame, and Nurit calls the entire ride home, already placing a comfort order from Temu that will arrive at your home before you do.",
+      "<strong>It will hurt for a while and then it will just be a very good story you tell at parties. Nurit's gifts help. They always do.</strong>"
+    ]},
+  s4_endPied:{ending:true,bad:true,badge:"Bad Ending · Karma",time:"The Final",fill:100,art:"🚕",
+    title:"Pied Off, Live on Television",
+    body:[
+      "You switched for a 'stronger connection' — looked your loyal friend in the eye and made the switch — and the person you switched to immediately, clearly, and on live television, chose <em>their</em> best friend instead. The one they'd been loyal to the whole time.",
+      "The villa goes silent. Not an uncomfortable silence. A very specific kind of quiet that only happens when everyone present is having the same thought simultaneously.",
+      "The friend you left watches from across the fire pit with an expression you will think about at unexpected moments for the rest of your life.",
+      "Tom does not narrate this moment. He says nothing. He understands that the silence does better work than any words available to him.",
+      "Max, without hesitation, takes off his beanie and offers it to you as you walk out. It helps.",
+      "<strong>It helps more than you expected. You keep the beanie. You and Max become genuine friends afterward. That part didn't make the show.</strong>"
+    ]}
+};
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const stage=document.getElementById('stage');
+const clockTime=document.getElementById('clockTime');
+const clockFill=document.getElementById('clockFill');
+const dot=document.getElementById('dot');
+let state={flag:null,story:null};
+let currentChoices=[];
+
+function setClock(time,fill){
+  if(time!=null) clockTime.textContent=time;
+  if(fill!=null){
+    clockFill.style.width=fill+"%";
+    if(fill>=80) dot.style.background="var(--coral)";
+    else if(fill>=50) dot.style.background="#FF8A1E";
+    else dot.style.background="var(--yolk)";
+  }
+}
+function chip(key){const c=C[key];if(!c)return"";
+  return `<span class="chip"><span class="av" style="background:${c.hue}">${c.e}</span><span><span class="nm">${c.n}</span></span><span class="ro">${c.r}</span></span>`;}
+
+function resolveEnding(kind){
+  const [story,k]=kind.split(':');
+  if(story==='s1'){
+    if(k==='sendraw') return WILD.includes(state.flag)?'s1_endViral':'s1_endChaos';
+    if(k==='clean')   return POLISHED.includes(state.flag)?'s1_endLegendary':'s1_endClean';
+  }
+  if(story==='s2'){
+    const careful=state.flag==='careful';
+    if(k==='cool')     return careful?'s2_endSmooth':'s2_endCaught';
+    if(k==='star')     return careful?'s2_endMascot':'s2_endServer';
+    if(k==='laurence') return careful?'s2_endLaurence':'s2_endEscape';
+  }
+  if(story==='s3'){
+    const believer=state.flag==='believer';
+    if(k==='join')   return believer?'s3_endOneOfUs':'s3_endTooDeep';
+    if(k==='expose') return believer?'s3_endChosen':'s3_endExcommunicated';
+    if(k==='alexa')  return believer?'s3_endTruth':'s3_endLostPlot';
+  }
+  if(story==='s4'){
+    const loyal=state.flag==='loyal';
+    if(k==='loyal')   return loyal?'s4_endWinners':'s4_endMessy';
+    if(k==='declare') return loyal?'s4_endFanFav':'s4_endDumped';
+    if(k==='switch')  return loyal?'s4_endPied':'s4_endIconic';
+  }
+  return 's1_endChaos';
+}
+function resolveTo(kind){render(resolveEnding(kind));}
+
+function goHome(){
+  state={flag:null,story:null};
+  setClock("Wednesday",0);
+  window.scrollTo({top:0,behavior:'smooth'});
+  stage.innerHTML=`<div class="page">
+    <p class="eyebrow"><span class="num">▸</span>Choose your adventure</p>
+    <div class="art">🍳</div>
+    <h1 class="title">Mama Creative Breakfast</h1>
+    <p class="lede">Four stories. Lots of choices. Good endings, bad endings, a determined rabbit, a possible cult, and a friendship reality show. Pick a story - then decide together as a room. Every choice changes how it ends.</p>
+    <div class="stories">
+      <button class="storycard" onclick="startStory('s1')">
+        <span class="big">🥐</span>
+        <span class="lab">Story One</span>
+        <h3>The Golden Brief</h3>
+        <p>The biggest campaign in Mama's history lands at breakfast - and it's due by 5 PM today. A high-stakes race against the clock. <strong>8 endings.</strong></p>
+        <span class="go">Begin ▸</span>
+      </button>
+      <button class="storycard" onclick="startStory('s2')">
+        <span class="big">🐰</span>
+        <span class="lab">Story Two</span>
+        <h3>The Great Mielie Hunt</h3>
+        <p>Chelane's bunny is loose in the building - and a big client arrives in two hours. A frantic, fluffy office hunt. <strong>6 endings.</strong></p>
+        <span class="go">Begin ▸</span>
+      </button>
+      <button class="storycard" onclick="startStory('s3')">
+        <span class="big">🌀</span>
+        <span class="lab">Story Three</span>
+        <h3>The Mama Cult</h3>
+        <p>It's your first week, and everyone is suspiciously happy. Is Mama a cult... or just really good culture? Investigate. <strong>6 endings.</strong></p>
+        <span class="go">Begin ▸</span>
+      </button>
+      <button class="storycard" onclick="startStory('s4')">
+        <span class="big">🌴</span>
+        <span class="lab">Story Four</span>
+        <h3>Mama Friendship Island</h3>
+        <p>Love Island, but for friendship. Couple up, survive recouplings, avoid getting friend-dumped from the villa. <strong>6 endings.</strong></p>
+        <span class="go">Begin ▸</span>
+      </button>
+    </div>
+    <div class="actions"><button class="btn ghost" onclick="showCast()">Meet the whole cast →</button></div>
+  </div>`;
+  currentChoices=[];
+}
+function startStory(s){state={flag:null,story:s};render(s+'_start');}
+
+function render(key){
+  const node=STORY[key];
+  if(!node){goHome();return;}
+  state.story = key.slice(0,2);
+  if(node.flag) state.flag=node.flag;
+  setClock(node.time,node.fill);
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const badClass = node.bad?' ending-bad':'';
+  let html=`<div class="page ${node.ending?'ending'+badClass:''}">`;
+  if(node.ending){ html+=`<span class="badge">${node.bad?'💀':'⭐'} ${node.badge}</span>`; }
+  else { html+=`<p class="eyebrow"><span class="num">${node.num}</span>${node.chapter}</p>`; }
+  html+=`<div class="art">${node.art}</div>`;
+  html+=`<h1 class="title">${node.title}</h1>`;
+  html+=`<div class="body">${node.body.map(p=>`<p>${p}</p>`).join("")}</div>`;
+  if(node.cast&&node.cast.length){ html+=`<div class="castrow">${node.cast.map(chip).join("")}</div>`; }
+
+  if(node.ending){
+    html+=`<div class="actions">
+      <button class="btn coral" onclick="startStory('${state.story}')">↺ Play this story again</button>
+      <button class="btn" onclick="goHome()">← All four stories</button>
+      <button class="btn ghost" onclick="showCast()">Meet the cast</button>
+    </div>`;
+    currentChoices=[];
+  } else {
+    html+=`<div class="choices">`;
+    currentChoices=node.choices;
+    node.choices.forEach((ch,i)=>{
+      const target=ch.resolve?`resolveTo('${ch.resolve}')`:`render('${ch.to}')`;
+      html+=`<button class="choice" onclick="${target}"><span class="key">${i+1}</span><span class="ic">${ch.ic}</span><span class="lbl">${ch.lbl}</span></button>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`</div>`;
+  stage.innerHTML=html;
+}
+
+function showCast(){
+  setClock("The Cast",100);
+  window.scrollTo({top:0,behavior:'smooth'});
+  const cards=Object.keys(C).map(k=>{const c=C[k];
+    return `<div class="castcard"><span class="av" style="background:${c.hue}">${c.e}</span><span><div class="nm">${c.n}</div><div class="ro">${c.r}</div><div class="qk">${c.q}</div></span></div>`;}).join("");
+  stage.innerHTML=`<div class="page">
+    <p class="eyebrow"><span class="num">★</span>The Mama Cast</p>
+    <div class="art">🎬</div>
+    <h1 class="title">Everyone Who Makes It Mama</h1>
+    <div class="body"><p>Whatever path you take, every one of these legends turns up somewhere across the four stories. Replay to find them all.</p></div>
+    <div class="castgrid">${cards}</div>
+    <div class="actions"><button class="btn coral" onclick="goHome()">↺ Back to the stories</button></div>
+  </div>`;
+  currentChoices=[];
+}
+
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='r'||e.key==='R'){ if(state.story) startStory(state.story); else goHome(); return; }
+  if(e.key==='h'||e.key==='H'){ goHome(); return; }
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=currentChoices.length){
+    const ch=currentChoices[n-1];
+    if(ch.resolve) resolveTo(ch.resolve); else render(ch.to);
+  }
+});
+
+goHome();
+</script>
+</body>
+</html>
